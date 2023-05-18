@@ -1,13 +1,13 @@
 Subject: [PATCH] Renamed vid to tenant on deliver-creds call
 ---
-Index: rest/patches/KeycloakGuard.php
+Index: rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
-diff --git a/rest/patches/KeycloakGuard.php b/rest/patches/KeycloakGuard.php
---- a/rest/patches/KeycloakGuard.php	(revision 0ed1611e567f47a2a1a6bf9b491f0b2f143bae32)
-+++ b/rest/patches/KeycloakGuard.php	(date 1684386160652)
+diff --git a/rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php b/rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php
+--- a/rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php	(revision 0ed1611e567f47a2a1a6bf9b491f0b2f143bae32)
++++ b/rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php	(date 1684386160652)
 @@ -37,6 +37,13 @@
    {
      try {
