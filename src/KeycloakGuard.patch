@@ -1,11 +1,5 @@
-Index: rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
-diff --git a/rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php b/rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php
---- a/rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php	(revision 760b2ee1b27f3b3301dc5fea7aabb41da44ed517)
-+++ b/rest/vendor/robsontenorio/laravel-keycloak-guard/src/KeycloakGuard.php	(date 1684422956083)
+--- /dev/null
++++ ../src/KeycloakGuard.php
 @@ -37,6 +37,13 @@
    {
      try {
