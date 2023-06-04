@@ -1,16 +1,72 @@
 --- /dev/null
 +++ ../src/KeycloakGuard.php
-@@ -37,6 +37,13 @@
+@@ -8,6 +8,8 @@
+ use KeycloakGuard\Exceptions\TokenException;
+ use KeycloakGuard\Exceptions\UserNotFoundException;
+ use KeycloakGuard\Exceptions\ResourceAccessNotAllowedException;
++use Illuminate\Support\Facades\Log;
++use Firebase\JWT\JWT;
+
+ class KeycloakGuard implements Guard
+ {
+@@ -36,7 +38,17 @@
+   private function authenticate()
    {
      try {
++      if( isset($this->config['clients']) ) {
++        $strNoBlanks = str_replace(" ", "", $this->config['clients'] );
++        $aKeycloakConfig = json_decode($strNoBlanks, TRUE);
++        $azp = $this->extractAZP($this->request->bearerToken());
++        $this->config = $aKeycloakConfig[$azp]; // Overwrite all config from client
++      }
++
        $this->decodedToken = Token::decode($this->request->bearerToken(), $this->config['realm_public_key']);
 +      if( isset($this->config['clients']) ) {
-+        $aKeycloakConfig = json_decode( $this->config['clients'], true );
-+        $realmPubKey = $this->config['realm_public_key'];
-+        $this->config = $aKeycloakConfig[$this->decodedToken->azp];
-+        $this->config['realm_public_key'] = $realmPubKey;
-+        //error_log( "Config ". print_r($this->config, true) );
++        $this->config = $aKeycloakConfig[$this->decodedToken->azp]; // Overwrite all config from client
 +      }
      } catch (\Exception $e) {
        throw new TokenException($e->getMessage());
      }
+@@ -48,6 +60,29 @@
+     }
+   }
+
++  /**
++   * Extract the authorized party (azp) from the passed AWT.
++   *
++   * @param $jwt
++   * @return mixed
++   */
++  private function extractAZP($jwt)
++  {
++    $tks = \explode('.', $jwt);
++    if (\count($tks) != 3) {
++        throw new \UnexpectedValueException('Wrong number of segments');
++    }
++    list($headb64, $bodyb64, $cryptob64) = $tks;
++    if (null === $payload = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64))) {
++        throw new \UnexpectedValueException('Invalid claims encoding');
++    }
++    if( !empty($payload->azp) ) {
++        return $payload->azp;
++    }
++    else {
++        throw new \UnexpectedValueException('Invalid AZP');
++    }
++  }
+
+   /**
+    * Determine if the current user is authenticated.
+@@ -161,10 +196,10 @@
+     $allowed_resources = explode(',', $this->config['allowed_resources']);
+
+     if (count(array_intersect($token_resource_access, $allowed_resources)) == 0) {
+-      throw new ResourceAccessNotAllowedException("The decoded JWT token has not a valid `resource_access` allowed by API. Allowed resources by API: " . $this->config['allowed_resources']);
++      throw new ResourceAccessNotAllowedException("The decoded JWT token does not have a valid `resource_access` allowed by API. Allowe
++d resources by API: " . $this->config['allowed_resources']);
+     }
+   }
+-
+   /**
+    * Returns full decoded JWT token from athenticated user
+    *
